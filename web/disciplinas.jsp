@@ -12,20 +12,7 @@
             Exception err = null;
             Disciplina disciplina = (Disciplina)application.getAttribute("disciplina");
             
-            try{
-                if(disciplina == null){
-                    disciplina = new Disciplina();
-                    disciplina.addDisciplina("Banco de Dados","Conceitos de Base de Dados.","4");
-                    disciplina.addDisciplina("Engenharia de Software III","Conceitos, evolução e importância de arquitetura de software. ","4");
-                    disciplina.addDisciplina("Programação Orientada a Objetos","Conceitos e evolução da tecnologia de orientação a objetos.","4");
-                    disciplina.addDisciplina("Linguagem de Programação IV - INTERNET","Comandos de linguagens usadas na construção e estruturação de sites para a Web, com páginas dinâmi­cas e interativas.","4");
-                    disciplina.addDisciplina("Segurança da Informação","Requisitos de segurança de aplicações, de base de dados e de comunicações.","5");
-                    disciplina.addDisciplina("Sistemas Operacionais II","Apresentação de um sistema operacional específico utilizado em ambiente corporativo.","4");
-                    disciplina.addDisciplina("Metodologia da Pesquisa Científico-Tecnológica","O Papel da ciência e da tecnologia.","4");
-                    
-                    application.setAttribute("disciplina", disciplina);
-                }
-                
+            try{               
                 if(request.getParameter("nt") != null){
                     disciplina.setNota(Integer.parseInt(request.getParameter("id")), 
                             request.getParameter("nota"));
