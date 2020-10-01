@@ -1,0 +1,6 @@
+<%@ page pageEncoding="UTF-8" %>
+<center>
+    <a href="index.jsp">Ínicio</a>
+    <a href="sobre.jsp">Sobre</a>
+    <a href="disciplinas.jsp">Minhas Disciplinas</a>
+</center>
