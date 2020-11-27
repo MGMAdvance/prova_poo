@@ -1,58 +1,205 @@
 package fatec;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 
+import db.Listener;
+import java.sql.PreparedStatement;
+
 public class Disciplina {
-    ArrayList<ArrayList<String>> disciplina = new ArrayList<>();
+    private int id;
+    private String nome;
+    private String ementa;
+    private int ciclo;
+    private int nota;
     
     public Disciplina(){
     
     }
     
-    public Disciplina(String nome, String ementa, String ciclo){
-        ArrayList<String> materia = new ArrayList<>();
+    public Disciplina(int id, String nome, String ementa, int ciclo, int nota){
+        this.id = id;
+        this.nome = nome;
+        this.ementa = ementa;
+        this.ciclo = ciclo;
+        this.nota = nota;
+    }
+    
+    public static ArrayList<Disciplina> getList() throws Exception{
+        ArrayList<Disciplina> list = new ArrayList<>();
         
-        materia.add(nome);
-        materia.add(ementa);
-        materia.add(ciclo);
-        materia.add("Sem nota");
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
         
-        this.disciplina.add(materia);
-    }
-    
-    public void addDisciplina(String nome, String ementa, String ciclo){
-        ArrayList<String> materia = new ArrayList<>();
+        Exception methodException = null;
         
-        materia.add(nome);
-        materia.add(ementa);
-        materia.add(ciclo);
-        materia.add("Sem nota");
+        try{
+            con = Listener.getConnection();
+            stmt = con.createStatement();
+            rs = stmt.executeQuery("SELECT * FROM disciplinas");
+            
+            while(rs.next()){
+                list.add(new Disciplina(
+                        rs.getInt("id"),
+                        rs.getString("nome"),
+                        rs.getString("ementa"),
+                        rs.getInt("ciclo"),
+                        rs.getInt("nota")
+                ));
+            }
+            
+        }catch(Exception ex){
+            methodException = ex;
+        }finally{
+            try{rs.close();}catch(Exception ex){}
+            try{stmt.close();}catch(Exception ex){}
+            try{con.close();}catch(Exception ex){}
+        }
         
-        this.disciplina.add(materia);
+        if(methodException != null) throw methodException;
+        
+        return list;
     }
     
-    public ArrayList<ArrayList<String>> getList(){
-        return this.disciplina;
+    public static void insert(String nome, String ementa, int ciclo) throws Exception{
+        Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
+        Exception methodException = null;
+        
+        try{
+            con = Listener.getConnection();
+            stmt = con.prepareStatement("INSERT INTO disciplinas(nome, emente, ciclo) values(?,?,?)");
+            
+            stmt.setString(1, nome);
+            stmt.setString(2, ementa);
+            stmt.setInt(3, ciclo);
+            
+            stmt.execute();
+        }catch(Exception ex){
+            methodException = ex;
+        }finally{
+            try{rs.close();}catch(Exception ex){}
+            try{stmt.close();}catch(Exception ex){}
+            try{con.close();}catch(Exception ex){}
+        }
+        
+        if(methodException != null) throw methodException;
     }
     
-    public String getNome(int id){
-        return this.disciplina.get(id).get(0);
+    public static void update(int nota, int id) throws Exception{
+        Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
+        Exception methodException = null;
+        
+        try{
+            con = Listener.getConnection();
+            stmt = con.prepareStatement("UPDATE disciplinas SET nota=? WHERE id=?");
+            
+            stmt.setInt(1, nota);
+            stmt.setInt(2, id);
+            
+            stmt.execute();
+        }catch(Exception ex){
+            methodException = ex;
+        }finally{
+            try{rs.close();}catch(Exception ex){}
+            try{stmt.close();}catch(Exception ex){}
+            try{con.close();}catch(Exception ex){}
+        }
+        
+        if(methodException != null) throw methodException;
     }
     
-    public String getEmenta(int id){
-        return this.disciplina.get(id).get(1);
+    public static void delete(int id) throws Exception{
+        Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
+        Exception methodException = null;
+        
+        try{
+            con = Listener.getConnection();
+            stmt = con.prepareStatement("DELETE FROM disciplinas WHERE id=?");
+            
+            stmt.setInt(1, id);
+            
+            stmt.execute();
+        }catch(Exception ex){
+            methodException = ex;
+        }finally{
+            try{rs.close();}catch(Exception ex){}
+            try{stmt.close();}catch(Exception ex){}
+            try{con.close();}catch(Exception ex){}
+        }
+        
+        if(methodException != null) throw methodException;
     }
     
-    public String getCiclo(int id){
-        return this.disciplina.get(id).get(2);
+    public static int total() throws Exception{
+        int total = 0;
+        
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        
+        Exception methodException = null;
+        
+        try{
+            con = Listener.getConnection();
+            stmt = con.createStatement();
+            rs = stmt.executeQuery("SELECT COUNT(*) FROM disciplinas");
+            
+            while(rs.next()){
+                total = rs.getInt(1);
+            }
+        }catch(Exception ex){
+            methodException = ex;
+        }finally{
+            try{rs.close();}catch(Exception ex){}
+            try{stmt.close();}catch(Exception ex){}
+            try{con.close();}catch(Exception ex){}
+        }
+        
+        if(methodException != null) throw methodException;
+        
+        return total;
     }
     
-    public String getNota(int id){
-        return this.disciplina.get(id).get(3);
+    public int getId(){
+        return this.id;
     }
     
-    public void setNota(int id, String nota){
-        this.disciplina.get(id).set(3, nota);
+    public String getNome(){
+        return this.nome;
+    }
+    
+    public String getEmenta(){
+        return this.ementa;
+    }
+    
+    public int getCiclo(){
+        return this.ciclo;
+    }
+    
+    public int getNota(){
+        return this.nota;
+    }
+    
+    public static String getCreateStatement(){
+        return "CREATE TABLE IF NOT EXISTS disciplinas("
+                    +"id INTEGER PRIMARY KEY,"
+                    +"nome VARCHAR(100) NOT NULL,"
+                    +"ementa VARCHAR(200) NOT NULL,"
+                    +"ciclo INTEGER NOT NULL,"
+                    +"nota INTEGER DEFAULT 0"
+                +")";
     }
     
 }
