@@ -73,7 +73,7 @@ public class Disciplina {
         
         try{
             con = Listener.getConnection();
-            stmt = con.prepareStatement("INSERT INTO disciplinas(nome, emente, ciclo) values(?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO disciplinas(nome, ementa, ciclo) values(?,?,?)");
             
             stmt.setString(1, nome);
             stmt.setString(2, ementa);
